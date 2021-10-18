@@ -1,0 +1,102 @@
+using System.Web.Mvc;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using WebApiTest;
+using WebApiTest.Controllers;
+using WebApiTest.Models;
+using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+using System.Linq;
+using System;
+namespace WebApi Test.Tests.Controllers {
+  [TestClass] public class HomeControllerTest {
+    [TestMethod] public void Test_FirstName_Required() {
+        Customer cusotmer = new Customer {
+          LastName = "David", Email = "test@test.com", City = "Albany", PhoneNumber= "6788909890", DOB = new DateTime(2000, 12, 5), State = "New York", Country = "United States", StreetAddress1 = "Test", ZipCode = "12345"
+        };
+        var validationResultList = new List < ValidationResult > ();
+        Validator.TryValidateObject(cusotmer, new ValidationContext(cusotmer), validationResultList);
+        var message = validationResultList[0].ErrorMessage;
+        Assert.AreEqual("First Name is required", message);
+      }
+      [TestMethod] public void Test_LastName_Required() {
+        Customer cusotmer = new Customer {
+          FirstName = "John", Email = "test@test.com", City = "Albany", PhoneNumber= "6788909890", DOB = new DateTime(2000, 12, 5), State = "New York", Country = "United States", StreetAddress1 = "Test", ZipCode = "12345"
+        };
+        var validationResultList = new List < ValidationResult > ();
+        Validator.TryValidateObject(cusotmer, new ValidationContext(cusotmer), validationResultList);
+        var message = validationResultList[0].ErrorMessage;
+        Assert.AreEqual("Last Name is required", message);
+      }
+
+    [TestMethod] public void Test_Email_Invalid() {
+        Customer cusotmer = new Customer {
+          FirstName = "John", LastName = "David", Email = "testcom", City = "Albany", PhoneNumber= "6788909890", DOB = new DateTime(2000, 12, 5), State = "New York", Country = "United States", StreetAddress1 = "Test", ZipCode = "12345"
+        };
+        var validationResultList = new List < ValidationResult > ();
+        Validator.TryValidateObject(cusotmer, new ValidationContext(cusotmer), validationResultList);
+        var message = validationResultList[0].ErrorMessage;
+        Assert.AreEqual("Invalid Email", message);
+      } [TestMethod] public void Test_Phone_Invalid() {
+        Customer cusotmer = new Customer {
+          FirstName = "John", LastName = "David", Email = "test@test.com", City = "Albany", PhoneNumber= "146", DOB = new DateTime(2000, 12, 5), State = "New York", Country = "United States", StreetAddress1 = "Test", ZipCode = "12345"
+        };
+        var validationResultList = new List < ValidationResult > ();
+        Validator.TryValidateObject(cusotmer, new ValidationContext(cusotmer), validationResultList);
+        var message = validationResultList[0].ErrorMessage;
+        Assert.AreEqual("Invalid PhoneNumber", message);
+      }
+      [TestMethod] public void Test_StreetAddress1_Required() {
+        Customer cusotmer = new Customer {
+          FirstName = "John", LastName = "David", Email = "test@test.com", City = "Albany", PhoneNumber= "6788909890", DOB = new DateTime(2000, 12, 5), State = "New York", Country = "United States", ZipCode = "12345"
+        };
+        var validationResultList = new List < ValidationResult > ();
+        Validator.TryValidateObject(cusotmer, new ValidationContext(cusotmer), validationResultList);
+        var message = validationResultList[0].ErrorMessage;
+        Assert.AreEqual("Street Address 1 is required", message);
+      } [TestMethod] public void Test_City_Invalid() {
+        Customer cusotmer = new Customer {
+          FirstName = "John", LastName = "David", Email = "test@test.com", PhoneNumber= "6788909890", DOB = new DateTime(2000, 12, 5), State = "New York", Country = "United States", StreetAddress1 = "Test", ZipCode = "12345"
+        };
+        var validationResultList = new List < ValidationResult > ();
+        Validator.TryValidateObject(cusotmer, new ValidationContext(cusotmer), validationResultList);
+        var message = validationResultList[0].ErrorMessage;
+        Assert.AreEqual("City is required", message);
+      }
+
+    [TestMethod] public void Test_State_Invalid() {
+        Customer cusotmer = new Customer {
+          FirstName = "John", LastName = "David", Email = "test@test.com", City = "Albany", PhoneNumber= "6788909890", DOB = new DateTime(2000, 12, 5), State = "abc", Country = "United States", StreetAddress1 = "Test", ZipCode = "12345"
+        };
+        var validationResultList = new List < ValidationResult > ();
+        Validator.TryValidateObject(cusotmer, new ValidationContext(cusotmer), validationResultList);
+        var message = validationResultList[0].ErrorMessage;
+        Assert.AreEqual("Invalid State", message);
+      }
+      [TestMethod] public void Test_Country_Invalid() {
+        Customer cusotmer = new Customer {
+          FirstName = "John", LastName = "David", Email = "test@test.com", City = "Albany", PhoneNumber= "6788909890", DOB = new DateTime(2000, 12, 5), State = "New York", Country = "Abc", StreetAddress1 = "Test", ZipCode = "12345"
+        };
+        var validationResultList = new List < ValidationResult > ();
+        Validator.TryValidateObject(cusotmer, new ValidationContext(cusotmer), validationResultList);
+        var message = validationResultList[0].ErrorMessage;
+        Assert.AreEqual("Invalid Country", message);
+      }
+      [TestMethod] public void Test_DOB_Future_Date() {
+        Customer cusotmer = new Customer {
+          FirstName = "John", LastName = "David", Email = "test@test.com", City = "Albany", PhoneNumber= "6788909890", DOB = DateTime.Now.AddDays(100), State = "New York", Country = "United States", StreetAddress1 = "Test", ZipCode = "12345"
+        };
+        var validationResultList = new List < ValidationResult > ();
+        Validator.TryValidateObject(cusotmer, new ValidationContext(cusotmer), validationResultList);
+        var message = validationResultList[0].ErrorMessage;
+        Assert.AreEqual("Invalid Date Of Birth", message);
+      }
+      [TestMethod] public void Test_Validate_All() {
+        Customer cusotmer = new Customer {
+          FirstName = "John", LastName = "David", Email = "test@test.com", City = "Albany", PhoneNumber= "6788909890", DOB = new DateTime(2000, 12, 5), State = "New York", Country = "United States", StreetAddress1 = "Test", ZipCode = "12345"
+        };
+        var validationResultList = new List < ValidationResult > ();
+        Validator.TryValidateObject(cusotmer, new ValidationContext(cusotmer), validationResultList);
+        Assert.AreEqual(validationResultList.Any(), false);
+      }
+  }
+}
